@@ -4,6 +4,11 @@
 source 'https://rubygems.org'
 
 
-# Networking gems
+
 gem 'http'
 gem 'json2csv'
+
+gem 'rack-test'
+gem 'rake'
+gem 'pry'
+
