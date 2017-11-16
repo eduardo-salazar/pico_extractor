@@ -21,6 +21,7 @@ links.each do |link|
           user = DataExtraction::get_user_info(json)
           app = DataExtraction::get_app_info(json)
           dev = DataExtraction::get_device_info(json)
+          geo = DataExtraction::get_geo_info(json)
 
 
           # User information
@@ -37,6 +38,9 @@ links.each do |link|
           puts dev.user_default_language
           puts dev.time_zone_offset_seconds
           puts dev.limited_ad_tracking
+          puts geo.continent
+          puts geo.country
+          puts geo.region
 
           break
 
