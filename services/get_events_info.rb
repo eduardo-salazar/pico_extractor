@@ -9,10 +9,10 @@ module DataExtraction
       object["event_dim"].each do |event|
 
         new_event = Event.new
-        new_event.name = event["name"]
-        new_event.date = event["date"]
-        new_event.timestamp_micros = event["timestamp_micros"]
-        new_event.previous_timestamp_micros = event["previous_timestamp_micros"]
+        new_event.name = event["name"] rescue ""
+        new_event.date = event["date"] rescue ""
+        new_event.timestamp_micros = event["timestamp_micros"] rescue ""
+        new_event.previous_timestamp_micros = event["previous_timestamp_micros"] rescue ""
 
         events.push(new_event)
 

@@ -10,9 +10,37 @@ links = DataExtraction::get_links(config["cardinalblue_ios_file"],sample:1)
 
 links.each do |link|
   # Download File and save it (saved to temp_data.json)
-  destination = DataExtraction::download_file(link, destination:config["export_directory"])
+  destination = DataExtraction::download_file(link, destination:config["export_directory"]+"/source")
   file_name = destination.split("/").last.split(".").first
 
+  #Create Empty export files
+  csv_user_path = config["export_directory"] + "/user_info.csv"
+  csv_events_path = config["export_directory"] + "/user_info.csv"
+  DataExtraction::csv_create(csv_user_path,[
+    "source",
+    "cbid",
+    "first_open_timestamp",
+    "app_id",
+    "app_version",
+    "app_instance_id",
+    "app_store",
+    "app_platform",
+    "device_category",
+    "device_model",
+    "device_platform_version",
+    "device_user_default_language",
+    "device_time_zone_offset_seconds",
+    "device_limited_ad_tracking",
+    "geo_continent",
+    "geo_country",
+    "geo_region",
+    "traffic_source_user_acquired_campaign",
+    "traffic_source_user_acquired_source",
+    "traffic_source_user_acquired_medium",
+    "bundle_sequence_id",
+    "bundleserver_timestamp_offset_micros",
+    "num_events"
+  ])
 
   File.open(destination, "r") do |f|
       f.each_line do |line|
@@ -29,27 +57,6 @@ links.each do |link|
 
 
           # User information
-          puts user.cbid
-          puts user.first_open_timestamp
-          puts app.id
-          puts app.version
-          puts app.instance_id
-          puts app.store
-          puts app.platform
-          puts dev.category
-          puts dev.model
-          puts dev.platform_version
-          puts dev.user_default_language
-          puts dev.time_zone_offset_seconds
-          puts dev.limited_ad_tracking
-          puts geo.continent
-          puts geo.country
-          puts geo.region
-          puts ts.user_acquired_campaign
-          puts ts.user_acquired_source
-          puts ts.user_acquired_medium
-          puts bundle.bundle_sequence_id
-          puts bundle.server_timestamp_offset_micros
 
           puts "Events"
           events.each do |event|
@@ -59,6 +66,32 @@ links.each do |link|
             puts event.timestamp_micros
             puts event.previous_timestamp_micros
           end
+
+          DataExtraction::csv_add_line(csv_user_path,[
+            file_name,
+            user.cbid,
+            user.first_open_timestamp,
+            app.id,
+            app.version,
+            app.instance_id,
+            app.store,
+            app.platform,
+            dev.category,
+            dev.model,
+            dev.platform_version,
+            dev.user_default_language,
+            dev.time_zone_offset_seconds,
+            dev.limited_ad_tracking,
+            geo.continent,
+            geo.country,
+            geo.region,
+            ts.user_acquired_campaign,
+            ts.user_acquired_source,
+            ts.user_acquired_medium,
+            bundle.bundle_sequence_id,
+            bundle.server_timestamp_offset_micros,
+            events.size
+          ])
 
           puts file_name
 

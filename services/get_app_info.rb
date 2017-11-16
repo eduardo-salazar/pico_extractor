@@ -5,11 +5,11 @@ module DataExtraction
 
       app = App.new
       puts "Extracting from app_info"
-      app.id = object["user_dim"]["app_info"]["app_id"]
-      app.version = object["user_dim"]["app_info"]["app_version"]
-      app.instance_id =object["user_dim"]["app_info"]["app_instance_id"]
-      app.store =object["user_dim"]["app_info"]["app_store"]
-      app.platform =object["user_dim"]["app_info"]["app_platform"]
+      app.id = object["user_dim"]["app_info"]["app_id"] rescue ""
+      app.version = object["user_dim"]["app_info"]["app_version"] rescue ""
+      app.instance_id =object["user_dim"]["app_info"]["app_instance_id"] rescue ""
+      app.store =object["user_dim"]["app_info"]["app_store"] rescue ""
+      app.platform =object["user_dim"]["app_info"]["app_platform"] rescue ""
 
       app
   end
