@@ -1,1 +1,5 @@
 require_relative 'event.rb'
+require_relative 'user.rb'
+require_relative 'app.rb'
+require_relative 'device.rb'
+require_relative 'geo_info.rb'
