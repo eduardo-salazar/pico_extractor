@@ -1,0 +1,8 @@
+# Add configuration values here, as shown below.
+# Change name of file to .config.yml
+#Locaiton of ios file
+cardinalblue_ios_file: ""
+
+# Exporting directory for temporal file
+export_diectory: ""
+#
