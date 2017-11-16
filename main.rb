@@ -23,6 +23,7 @@ links.each do |link|
           dev = DataExtraction::get_device_info(json)
           geo = DataExtraction::get_geo_info(json)
           ts = DataExtraction::get_traffic_source(json)
+          bundle = DataExtraction::get_bundle_info(json)
 
 
           # User information
@@ -45,6 +46,9 @@ links.each do |link|
           puts ts.user_acquired_campaign
           puts ts.user_acquired_source
           puts ts.user_acquired_medium
+          puts bundle.bundle_sequence_id
+          puts bundle.server_timestamp_offset_micros
+
           break
 
 
