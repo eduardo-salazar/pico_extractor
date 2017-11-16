@@ -77,7 +77,7 @@ links.each_with_index do |link,index|
   File.readlines(destination).sample(sample_size).each do |line|
 
       i += 1
-      puts " Link #{index+1} of #{total_links} | Processing object #{i}"
+      puts " Link #{index+1} of #{links.size} | Processing object #{i}"
       json = JSON.parse(line)
 
       # Getting information
