@@ -1,8 +1,11 @@
 # Add configuration values here, as shown below.
 # Change name of file to .config.yml
-#Locaiton of ios file
+#Location of ios file (ios.txt)
 cardinalblue_ios_file: ""
 
 # Exporting directory for temporal file
-export_diectory: ""
-#
+export_directory: ""
+
+# Sample size
+links_sample: "" #Percentage(decimal) of link you want to process ex: 0.1,0.03
+records_sample: "" #Percentage(decimal) of record per link you want to process ex:0.1,0.03
