@@ -50,7 +50,7 @@ links = DataExtraction::get_links(config["cardinalblue_ios_file"],sample:2)
 total_links = links.size
 
 links.each_with_index do |link,index|
-  puts "#{index+1} of #{total_links}: Downloading file"
+  puts "#{index+1} of #{total_links}: Downloading file #{link}"
   # Download File and save it (saved to temp_data.json)
   destination = DataExtraction::download_file(link, destination:config["export_directory"]+"/source")
   file_name = destination.split("/").last.split(".").first
