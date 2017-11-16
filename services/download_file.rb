@@ -4,7 +4,7 @@ require 'zlib'
 module DataExtraction
 
   def self.download_file(url,destination:"/")
-      puts "File is downloading: #{url}"
+      #puts "File is downloading: #{url}"
       begin
           download = open(url.strip)
           name = url.split("/").last.split(".").first

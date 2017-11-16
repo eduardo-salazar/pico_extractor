@@ -4,7 +4,7 @@ module DataExtraction
   def self.get_device_info(object)
 
       dev = Device.new
-      puts "Extracting from device_info"
+      #puts "Extracting from device_info"
 
       dev.category = object["user_dim"]["device_info"]["device_category"] rescue ""
       dev.model = object["user_dim"]["device_info"]["device_model"] rescue ""

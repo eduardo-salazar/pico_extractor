@@ -4,7 +4,7 @@ module DataExtraction
   def self.get_events_info(object)
 
       events = Array.new
-      puts "Extracting from events_dim"
+      #puts "Extracting from events_dim"
 
       object["event_dim"].each do |event|
 
