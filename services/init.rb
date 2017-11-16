@@ -4,6 +4,7 @@ require_relative 'get_user_info'
 require_relative 'get_app_info'
 require_relative 'get_device_info'
 require_relative 'get_geo_info'
+require_relative 'get_traffic_source'
 
 module DataExtraction
   require 'open-uri'

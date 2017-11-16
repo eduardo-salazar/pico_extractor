@@ -22,6 +22,7 @@ links.each do |link|
           app = DataExtraction::get_app_info(json)
           dev = DataExtraction::get_device_info(json)
           geo = DataExtraction::get_geo_info(json)
+          ts = DataExtraction::get_traffic_source(json)
 
 
           # User information
@@ -41,7 +42,9 @@ links.each do |link|
           puts geo.continent
           puts geo.country
           puts geo.region
-
+          puts ts.user_acquired_campaign
+          puts ts.user_acquired_source
+          puts ts.user_acquired_medium
           break
 
 
