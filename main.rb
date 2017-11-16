@@ -11,6 +11,7 @@ links = DataExtraction::get_links(config["cardinalblue_ios_file"],sample:1)
 links.each do |link|
   # Download File and save it (saved to temp_data.json)
   destination = DataExtraction::download_file(link, destination:config["export_directory"])
+  file_name = destination.split("/").last.split(".").first
 
 
   File.open(destination, "r") do |f|
@@ -24,6 +25,7 @@ links.each do |link|
           geo = DataExtraction::get_geo_info(json)
           ts = DataExtraction::get_traffic_source(json)
           bundle = DataExtraction::get_bundle_info(json)
+          events = DataExtraction::get_events_info(json)
 
 
           # User information
@@ -48,6 +50,17 @@ links.each do |link|
           puts ts.user_acquired_medium
           puts bundle.bundle_sequence_id
           puts bundle.server_timestamp_offset_micros
+
+          puts "Events"
+          events.each do |event|
+            puts ""
+            puts event.name
+            puts event.date
+            puts event.timestamp_micros
+            puts event.previous_timestamp_micros
+          end
+
+          puts file_name
 
           break
 
