@@ -1,0 +1,9 @@
+# Configuarion for this project.
+# Please rename this file to application.yml
+# Make sure all the variables are set before running
+
+# Locaiton of ios file
+cardinalblue_ios_file: ''
+
+# Exporting directory for temporal file
+export_diectory: ''

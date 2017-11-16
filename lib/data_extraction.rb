@@ -6,7 +6,7 @@ module DataExtraction
         puts "File is downloading: #{url}"
         begin
             download = open(url.strip)
-            gz = Zlib::GzipReader.new(download) 
+            gz = Zlib::GzipReader.new(download)
             result = gz.read
             File.write('temp_data.json', result)
         rescue Exception => e
@@ -57,14 +57,15 @@ module DataExtraction
         File.open(json_path, "r") do |f|
             f.each_line do |line|
                 json = JSON.parse(line)
-                
+
                 data << json["user_dim"][input]
-                
+
             end
 
             puts "Finished extracting!"
-            
+
         end
     end
-        
+
+
 end

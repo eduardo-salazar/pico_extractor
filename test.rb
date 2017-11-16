@@ -29,14 +29,10 @@ DataExtraction::read_links_file("../ios_events.txt", [2]){ |url|
             data = []
             DataExtraction::extract_input_user_dim("temp_data.json", data, input)
             DataExtraction::save_json_file(data, input)
-            
-    
         end
 
         DataExtraction.remove_file("temp_data.json")
-    
+
         puts "Finished with #{url}"
     end
-
-    
 }
