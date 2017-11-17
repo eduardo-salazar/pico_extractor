@@ -2,6 +2,7 @@ require 'uri'
 require 'app_configuration'
 require_relative 'services/init.rb'
 require_relative 'models/init.rb'
+require 'securerandom'
 
 config = AppConfiguration.new
 
@@ -10,6 +11,7 @@ csv_user_path = config["export_directory"] + "/user_info.csv"
 csv_events_path = config["export_directory"] + "/events_info.csv"
 csv_summary_path = config["export_directory"] + "/summary.csv"
 DataExtraction::csv_create(csv_user_path,[
+  "session_id",
   "source",
   "cbid",
   "first_open_timestamp",
@@ -36,6 +38,7 @@ DataExtraction::csv_create(csv_user_path,[
 ])
 
 DataExtraction::csv_create(csv_events_path,[
+  "session_id",
   "source",
   "cbid",
   "app_instance_id",
@@ -75,7 +78,7 @@ links.each_with_index do |link,index|
   ])
 
   File.readlines(destination).sample(sample_size).each do |line|
-
+      random_id = SecureRandom.hex
       i += 1
       puts " Link #{index+1} of #{links.size} | Processing object #{i}"
       json = JSON.parse(line)
@@ -92,6 +95,7 @@ links.each_with_index do |link,index|
 
       #Exporting info of users
       DataExtraction::csv_add_line(csv_user_path,[
+        random_id,
         file_name,
         user.cbid,
         user.first_open_timestamp,
@@ -120,6 +124,7 @@ links.each_with_index do |link,index|
       #Exporting info of Events
       events.each do |event|
         DataExtraction::csv_add_line(csv_events_path,[
+          random_id,
           file_name,
           user.cbid,
           app.instance_id,
