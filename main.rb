@@ -129,9 +129,7 @@ links.each_with_index do |link,index|
           event.previous_timestamp_micros
         ])
       end
-
-      DataExtraction::delete_file(destination)
-
   end
+  DataExtraction::delete_file(destination)
 
 end
