@@ -1,4 +1,4 @@
 #Model of ios_events
 class Event
-  attr_accessor :name,:date,:timestamp_micros,:previous_timestamp_micros
+  attr_accessor :name,:date,:timestamp_micros,:previous_timestamp_micros,:type,:purchase_events
 end

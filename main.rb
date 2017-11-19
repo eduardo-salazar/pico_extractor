@@ -34,9 +34,7 @@ DataExtraction::csv_create(csv_user_path,[
   "traffic_source_user_acquired_medium",
   "bundle_sequence_id",
   "bundleserver_timestamp_offset_micros",
-  "num_events",
-  "purchase_event1",
-  "purchase_event2",
+  "num_events"
 ])
 
 DataExtraction::csv_create(csv_events_path,[
@@ -47,7 +45,12 @@ DataExtraction::csv_create(csv_events_path,[
   "event_name",
   "event_date",
   "event_timestamp_micros",
-  "event_previous_timestamp_micros"
+  "event_previous_timestamp_micros",
+  "type",
+  "product_id",
+  "device_id",
+  "created_at",
+  "updated_at"
 ])
 
 DataExtraction::csv_create(csv_summary_path,[
@@ -120,9 +123,7 @@ links.each_with_index do |link,index|
         ts.user_acquired_medium,
         bundle.bundle_sequence_id,
         bundle.server_timestamp_offset_micros,
-        events.size,
-        json["purchase_event"],
-        json["Purchase_event"]
+        events.size
       ])
 
       #Exporting info of Events
@@ -135,7 +136,12 @@ links.each_with_index do |link,index|
           event.name,
           event.date,
           event.timestamp_micros,
-          event.previous_timestamp_micros
+          event.previous_timestamp_micros,
+          event.type,
+          event.purchase_events.product_id,
+          event.purchase_events.device_id,
+          event.purchase_events.created_at,
+          event.purchase_events.updated_at
         ])
       end
   end
