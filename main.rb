@@ -82,10 +82,15 @@ DataExtraction::csv_add_line(csv_summary_path,[
 
 links.each_with_index do |link,index|
   puts "#{index+1} of #{links.size}: Downloading file #{link}"
-  # Download File and save it (saved to temp_data.json)
-  destination = DataExtraction::download_file(link, destination:config["export_directory"])
-  file_name = destination.split("/").last.split(".").first
+  # Get file json file name
+  file_name = link.split("/").last.split(".").first + ".json"
+  destination = config["export_directory"]+"/#{file_name}"
 
+  if !File.exitst?(file_name)
+    # Download File and save it (saved to temp_data.json)
+    destination = DataExtraction::download_file(link, destination:config["export_directory"])
+  end
+  
   i = 0
   link_lines_count = `wc -l "#{destination}"`.strip.split(' ')[0].to_i
   puts "Total lines #{link_lines_count}"
@@ -176,5 +181,4 @@ links.each_with_index do |link,index|
       end
   end
   DataExtraction::delete_file(destination)
-
 end

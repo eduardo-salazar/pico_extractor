@@ -9,6 +9,7 @@ require_relative 'get_bundle_info'
 require_relative 'get_events_info'
 require_relative 'csv_export'
 require_relative 'delete_file'
+require_relative 'insert_db'
 
 module DataExtraction
   require 'open-uri'
