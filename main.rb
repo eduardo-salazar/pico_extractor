@@ -81,12 +81,12 @@ DataExtraction::csv_add_line(csv_summary_path,[
 ])
 
 links.each_with_index do |link,index|
-  puts "#{index+1} of #{links.size}: Downloading file #{link}"
-  # Get file json file name
   file_name = link.split("/").last.split(".").first + ".json"
   destination = config["export_directory"]+"/#{file_name}"
 
-  if !File.exitst?(file_name)
+  puts "Checking if #{destination} exists"
+  if !File.exists?(destination)
+    puts "#{index+1} of #{links.size}: Downloading file #{link}"
     # Download File and save it (saved to temp_data.json)
     destination = DataExtraction::download_file(link, destination:config["export_directory"])
   end

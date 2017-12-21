@@ -25,3 +25,17 @@ run `ruby main.rb` to parse links and save into 3 files. This will create 3 file
 If you want to dump to Mysql make sure env variable mysql_path is set in `config.yml` and also that mysql server
 is running 
 run `ruby main_to_mysql.rb`
+
+Note: If you need to save database in a external drive please do this before running script:
+
+1.Stop MySQL (service mysql stop)
+
+Make a dir in the HDD (mkdir /mysqldata)
+
+2.Move your data files to HDD (cp -rp /var/lib/mysql/* /mysqldata)
+
+3.Search datadir in my.cnf (cat /etc/mysql/my.cnf | grep datadir )
+
+4.Change path accordinly (datadir = /var/lib/mysql To: datadir = /mysqldata )
+
+5.Start MySQL (service mysql start)

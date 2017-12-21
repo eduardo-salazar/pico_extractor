@@ -10,179 +10,115 @@ config = AppConfiguration.new
 db = DataExtraction::DbClient.new(config["mysql_host"],config["mysql_username"],config["mysql_password"])
 db.run_query("create_schema")
 
-# #Create Empty export files
-# csv_user_path = config["export_directory"] + "/user_info.csv"
-# csv_events_path = config["export_directory"] + "/events_info.csv"
-# csv_summary_path = config["export_directory"] + "/summary.csv"
-# DataExtraction::csv_create(csv_user_path,[
-#   "session_id",
-#   "source",
-#   "cbid",
-#   "first_open_timestamp",
-#   "app_id",
-#   "app_version",
-#   "app_instance_id",
-#   "app_store",
-#   "app_platform",
-#   "device_category",
-#   "device_model",
-#   "device_platform_version",
-#   "device_user_default_language",
-#   "device_time_zone_offset_seconds",
-#   "device_limited_ad_tracking",
-#   "geo_continent",
-#   "geo_country",
-#   "geo_region",
-#   "traffic_source_user_acquired_campaign",
-#   "traffic_source_user_acquired_source",
-#   "traffic_source_user_acquired_medium",
-#   "bundle_sequence_id",
-#   "bundleserver_timestamp_offset_micros",
-#   "num_events"
-# ])
+# Database Picollage
+# Tables:
+#   events_info
+#   user_info
+#   summary_info
 
-# DataExtraction::csv_create(csv_events_path,[
-#   "session_id",
-#   "source",
-#   "cbid",
-#   "app_instance_id",
-#   "event_name",
-#   "event_date",
-#   "event_timestamp_micros",
-#   "event_previous_timestamp_micros",
-#   "type",
-#   "product_id",
-#   "device_id",
-#   "created_at",
-#   "updated_at",
-#   "category",
-#   "type",
-#   "font_name",
-#   "product_name",
-#   "collage_style",
-#   "background_type",
-#   "num_of_doodle",
-#   "num_of_image_scraps",
-#   "num_of_texts",
-#   "num_of_stickers",
-#   "from",
-#   "number_of_image",
-#   "stroke_count",
-#   "number",
-#   "category_name"
-# ])
+###############################################################################
+# Get Links
+links = DataExtraction::get_links(config["cardinalblue_ios_file"])
+total_links = links.size
+links = DataExtraction::sample_links(links,sample:config["links_sample"])
+db.insert_into("summary_info",[
+  "Links",total_links,config["links_sample"].to_f,links.size
+])
 
-# DataExtraction::csv_create(csv_summary_path,[
-#   "description","total","sample","size"
-# ])
-# ###############################################################################
-# # Get Links
-# links = DataExtraction::get_links(config["cardinalblue_ios_file"])
-# total_links = links.size
-# links = DataExtraction::sample_links(links,sample:config["links_sample"])
-# DataExtraction::csv_add_line(csv_summary_path,[
-#   "Links",total_links,config["links_sample"],links.size
-# ])
-
-# links.each_with_index do |link,index|
-#   puts "#{index+1} of #{links.size}: Downloading file #{link}"
-#   # Get file json file name
-#   file_name = link.split("/").last.split(".").first + ".json"
-#   destination = config["export_directory"]+"/#{file_name}"
-
-#   if !File.exitst?(file_name)
-#     # Download File and save it (saved to temp_data.json)
-#     destination = DataExtraction::download_file(link, destination:config["export_directory"])
-#   end
+links.each_with_index do |link,index|
   
-#   i = 0
-#   link_lines_count = `wc -l "#{destination}"`.strip.split(' ')[0].to_i
-#   puts "Total lines #{link_lines_count}"
+  # Get file json file name
+  file_name = link.split("/").last.split(".").first + ".json"
+  destination = config["export_directory"]+"/#{file_name}"
 
-#   #Calculate sample for link
-#   sample_size = (link_lines_count.to_f * config["records_sample"].to_f).ceil
-#   # Save in csv_summary_path
-#   DataExtraction::csv_add_line(csv_summary_path,[
-#     file_name,link_lines_count,config["records_sample"],sample_size
-#   ])
+  puts "Checking if #{destination} exists"
+  if !File.exists?(destination)
+    puts "#{index+1} of #{links.size}: Downloading file #{link}"
+    # Download File and save it (saved to temp_data.json)
+    destination = DataExtraction::download_file(link, destination:config["export_directory"])
+  end
+  puts "#{index+1} of #{links.size}: Reading file #{link}"
+  i = 0
+  link_lines_count = `wc -l "#{destination}"`.strip.split(' ')[0].to_i
+  puts "Total lines #{link_lines_count}"
 
-#   File.readlines(destination).sample(sample_size).each do |line|
-#       random_id = SecureRandom.hex
-#       i += 1
-#       puts " Link #{index+1} of #{links.size} | Processing object #{i}"
-#       json = JSON.parse(line)
+  #Calculate sample for link
+  sample_size = (link_lines_count.to_f * config["records_sample"].to_f).ceil
+  # Save in csv_summary_path
+  db.insert_into("summary_info",[
+    file_name,link_lines_count.to_i,config["records_sample"].to_f,sample_size.to_i
+  ])
 
-#       # Getting information
-#       user = DataExtraction::get_user_info(json)
-#       app = DataExtraction::get_app_info(json)
-#       dev = DataExtraction::get_device_info(json)
-#       geo = DataExtraction::get_geo_info(json)
-#       ts = DataExtraction::get_traffic_source(json)
-#       bundle = DataExtraction::get_bundle_info(json)
-#       events = DataExtraction::get_events_info(json)
+  File.readlines(destination).sample(sample_size).each do |line|
+      random_id = SecureRandom.hex
+      i += 1
+      puts "Link #{index+1} of #{links.size} | Processing object #{i} of #{sample_size}"
+      json = JSON.parse(line)
+
+      # Getting information
+      user = DataExtraction::get_user_info(json)
+      app = DataExtraction::get_app_info(json)
+      dev = DataExtraction::get_device_info(json)
+      geo = DataExtraction::get_geo_info(json)
+      ts = DataExtraction::get_traffic_source(json)
+      bundle = DataExtraction::get_bundle_info(json)
+      events = DataExtraction::get_events_info(json)
 
 
-#       #Exporting info of users
-#       DataExtraction::csv_add_line(csv_user_path,[
-#         random_id,
-#         file_name,
-#         user.cbid,
-#         user.first_open_timestamp,
-#         app.id,
-#         app.version,
-#         app.instance_id,
-#         app.store,
-#         app.platform,
-#         dev.category,
-#         dev.model,
-#         dev.platform_version,
-#         dev.user_default_language,
-#         dev.time_zone_offset_seconds,
-#         dev.limited_ad_tracking,
-#         geo.continent,
-#         geo.country,
-#         geo.region,
-#         ts.user_acquired_campaign,
-#         ts.user_acquired_source,
-#         ts.user_acquired_medium,
-#         bundle.bundle_sequence_id,
-#         bundle.server_timestamp_offset_micros,
-#         events.size
-#       ])
+      #Exporting info of users
+      db.insert_into("user_info",[
+        random_id.to_s,
+        file_name.to_s,
+        user.cbid.to_s,
+        user.first_open_timestamp.to_s,
+        app.id.to_s,
+        app.version.to_s,
+        app.instance_id.to_s,
+        app.store.to_s,
+        app.platform.to_s,
+        dev.category.to_s,
+        dev.model.to_s,
+        dev.platform_version.to_s,
+        dev.user_default_language.to_s,
+        dev.time_zone_offset_seconds.to_i,
+        dev.limited_ad_tracking.to_s,
+        geo.continent.to_s,
+        geo.country.to_s,
+        geo.region.to_s,
+        bundle.bundle_sequence_id.to_i,
+        bundle.server_timestamp_offset_micros.to_s,
+        events.size.to_i
+      ])
 
-#       #Exporting info of Events
-#       events.each do |event|
-#         DataExtraction::csv_add_line(csv_events_path,[
-#           random_id,
-#           file_name,
-#           user.cbid,
-#           app.instance_id,
-#           event.name,
-#           event.date,
-#           event.timestamp_micros,
-#           event.previous_timestamp_micros,
-#           event.type,
-#           event.purchase_events.product_id,
-#           event.purchase_events.device_id,
-#           event.purchase_events.created_at,
-#           event.purchase_events.updated_at,
-#           event.category,
-#           event.type,
-#           event.font_name,
-#           event.product_name,
-#           event.collage_style,
-#           event.background_type,
-#           event.num_of_doodle,
-#           event.num_of_image_scraps,
-#           event.num_of_texts,
-#           event.num_of_stickers,
-#           event.from,
-#           event.number_of_image,
-#           event.stroke_count,
-#           event.number,
-#           event.category_name
-#         ])
-#       end
-#   end
-#   DataExtraction::delete_file(destination)
-# end
+      #Exporting info of Events
+      events.each do |event|
+        db.insert_into("events_info",[
+          random_id.to_s,
+          file_name.to_s,
+          user.cbid.to_s,
+          app.instance_id,
+          event.name.to_s,
+          Date.strptime(event.date, '%Y%m%d').strftime('%Y-%m-%d %H:%M:%S'),
+          event.timestamp_micros,
+          event.previous_timestamp_micros.to_s,
+          event.type.to_s,
+          event.purchase_events.product_id.to_s,
+          event.purchase_events.device_id.to_s,
+          event.category.to_s,
+          event.font_name.to_s,
+          event.product_name.to_s,
+          event.collage_style.to_s,
+          event.background_type.to_s,
+          event.num_of_doodle.to_i,
+          event.num_of_image_scraps.to_i,
+          event.num_of_texts.to_i,
+          event.num_of_stickers.to_i,
+          event.from.to_s,
+          event.number_of_image.to_i,
+          event.stroke_count.to_i,
+          event.number.to_s,
+          event.category_name.to_s
+        ])
+      end
+  end
+end

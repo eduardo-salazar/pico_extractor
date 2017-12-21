@@ -11,7 +11,19 @@ module DataExtraction
    
     # insert into table
     def insert_into(table,values)
-
+      values = values.map do |value|
+        if !value.is_a? Numeric
+          "\'#{value.gsub("'", "\\\\'")}\'"
+        else
+          value
+        end
+      end
+      insert_s = "INSERT INTO `#{table}` values(NULL,#{values.join(',')})"
+      begin
+        @client.query(insert_s)
+      rescue
+        puts insert_s
+      end
     end
 
     # This will clean all data from tables
