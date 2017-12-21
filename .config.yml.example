@@ -1,11 +1,20 @@
 # Add configuration values here, as shown below.
 # Change name of file to .config.yml
-#Location of ios file (ios.txt)
+#Location of ios file
 cardinalblue_ios_file: ""
 
 # Exporting directory for temporal file
+# If directory is empty program will use this as temporal storage for .json files
+# If directory has json files then program won't dowload and use local files
 export_directory: ""
 
 # Sample size
-links_sample: "" #Percentage(decimal) of link you want to process ex: 0.1,0.03
-records_sample: "" #Percentage(decimal) of record per link you want to process ex:0.1,0.03
+links_sample: "" #Percentage of link you want to process [0.1 -> 1.0]
+records_sample: "" #Percentage of record per link you want to process [0.1 -> 1.0]
+
+
+# MySql
+# Set this variable if you want to run file main_to_mysl.rb
+mysql_host: ""
+mysql_username: ""
+mysql_password: ""
