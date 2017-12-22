@@ -2,10 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `PicCollage`;
 USE `PicCollage`;
 DROP TABLE IF EXISTS `events_info`;
 CREATE TABLE `events_info` (
-  `record_id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(255) DEFAULT NULL,
-  `source` varchar(255) DEFAULT NULL,
-  `cbid` varchar(255) DEFAULT NULL,
   `app_instance_id` varchar(255) DEFAULT NULL,
   `event_name` varchar(255) DEFAULT NULL,
   `event_date` date DEFAULT NULL,
@@ -28,13 +25,11 @@ CREATE TABLE `events_info` (
   `stroke_count` int(255) DEFAULT NULL,
   `number` varchar(255) DEFAULT NULL,
   `category_name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`record_id`),
-  KEY `Indexes` (`app_instance_id`,`event_name`,`event_timestamp_micros`,`event_previous_timestamp_micros`,`session_id`,`record_id`)
+  KEY `Indexes` (`app_instance_id`,`event_name`,`event_timestamp_micros`,`event_previous_timestamp_micros`,`session_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1125087 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info` (
-  `record_id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(255) DEFAULT NULL,
   `source` varchar(255) DEFAULT NULL,
   `cbid` varchar(255) DEFAULT NULL,
@@ -55,19 +50,14 @@ CREATE TABLE `user_info` (
   `geo_region` varchar(255) DEFAULT NULL,
   `bundle_sequence_id` int(255) DEFAULT NULL,
   `bundleserver_timestamp_offset_micros` bigint(255) DEFAULT NULL,
-  `num_events` int(255) DEFAULT NULL,
-  PRIMARY KEY (`record_id`),
-  KEY `Indexes` (`record_id`)
+  `num_events` int(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `summary_info`;
 CREATE TABLE `summary_info` (
-  `record_id` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(255) DEFAULT NULL,
   `total` int(255) DEFAULT NULL,
   `sample` float DEFAULT NULL,
-  `size` int(255) DEFAULT NULL,
-  PRIMARY KEY (`record_id`),
-  KEY `Indexes` (`record_id`)
+  `size` int(255) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1125087 DEFAULT CHARSET=utf8;
 

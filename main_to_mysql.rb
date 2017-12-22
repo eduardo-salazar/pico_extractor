@@ -9,6 +9,7 @@ config = AppConfiguration.new
 # Create connection and create squema
 db = DataExtraction::DbClient.new(config["mysql_host"],config["mysql_username"],config["mysql_password"])
 db.run_query("create_schema")
+unique_user = []
 
 # Database Picollage
 # Tables:
@@ -21,9 +22,6 @@ db.run_query("create_schema")
 links = DataExtraction::get_links(config["cardinalblue_ios_file"])
 total_links = links.size
 links = DataExtraction::sample_links(links,sample:config["links_sample"])
-db.insert_into("summary_info",[
-  "Links",total_links,config["links_sample"].to_f,links.size
-])
 
 links.each_with_index do |link,index|
   
@@ -44,20 +42,34 @@ links.each_with_index do |link,index|
 
   #Calculate sample for link
   sample_size = (link_lines_count.to_f * config["records_sample"].to_f).ceil
-  # Save in csv_summary_path
-  db.insert_into("summary_info",[
-    file_name,link_lines_count.to_i,config["records_sample"].to_f,sample_size.to_i
-  ])
 
+  #skip = 5000
   File.readlines(destination).sample(sample_size).each do |line|
       random_id = SecureRandom.hex
       i += 1
-      puts "Link #{index+1} of #{links.size} | Processing object #{i} of #{sample_size}"
+      #if i == skip
+      #  puts "Link #{index+1} of #{links.size} | Processing object #{i} of #{sample_size}"
+      #  skip = skip + 5000
+      #end 
       json = JSON.parse(line)
 
       # Getting information
-      user = DataExtraction::get_user_info(json)
       app = DataExtraction::get_app_info(json)
+
+      # This if is when unique user array reach limit of users to search
+      # No new app instances i allowed
+      if(config["total_users"].to_i == unique_user.size.to_i)
+        # If app instance id is not in list then go to next
+        if(!unique_user.include?(app.instance_id.to_s.strip))
+          next
+        end
+      else
+        unique_user.push(app.instance_id.to_s.strip) if(!unique_user.include?(app.instance_id.to_s.strip))
+      end
+
+      # Getting rest of information
+      puts "Link #{index+1} of #{links.size} | object #{i} of #{sample_size} | Extracting info of user #{app.instance_id}"
+      user = DataExtraction::get_user_info(json)
       dev = DataExtraction::get_device_info(json)
       geo = DataExtraction::get_geo_info(json)
       ts = DataExtraction::get_traffic_source(json)
@@ -73,7 +85,7 @@ links.each_with_index do |link,index|
         user.first_open_timestamp.to_s,
         app.id.to_s,
         app.version.to_s,
-        app.instance_id.to_s,
+        app.instance_id.to_s.strip,
         app.store.to_s,
         app.platform.to_s,
         dev.category.to_s,
@@ -94,9 +106,7 @@ links.each_with_index do |link,index|
       events.each do |event|
         db.insert_into("events_info",[
           random_id.to_s,
-          file_name.to_s,
-          user.cbid.to_s,
-          app.instance_id,
+          app.instance_id.to_s.strip,
           event.name.to_s,
           Date.strptime(event.date, '%Y%m%d').strftime('%Y-%m-%d %H:%M:%S'),
           event.timestamp_micros,

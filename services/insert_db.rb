@@ -18,7 +18,7 @@ module DataExtraction
           value
         end
       end
-      insert_s = "INSERT INTO `#{table}` values(NULL,#{values.join(',')})"
+      insert_s = "INSERT INTO `#{table}` values(#{values.join(',')})"
       begin
         @client.query(insert_s)
       rescue
