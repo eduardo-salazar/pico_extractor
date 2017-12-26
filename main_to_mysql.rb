@@ -9,7 +9,14 @@ config = AppConfiguration.new
 # Create connection and create squema
 db = DataExtraction::DbClient.new(config["mysql_host"],config["mysql_username"],config["mysql_password"])
 db.run_query("create_schema")
-unique_user = []
+
+# Check file with users id
+id_of_users = CSV.read(config["target_users_path"])
+if id_of_users.size > 0 
+  unique_user = id_of_users
+else
+  unique_user = []
+end
 
 # Database Picollage
 # Tables:
