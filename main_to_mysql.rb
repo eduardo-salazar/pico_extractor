@@ -11,7 +11,10 @@ db = DataExtraction::DbClient.new(config["mysql_host"],config["mysql_username"],
 db.run_query("create_schema")
 
 # Check file with users id
-id_of_users = CSV.read(config["target_users_path"])
+id_of_users = []
+CSV.foreach(config["target_users_path"]) do |row|
+  id_of_users.push(row[0].to_s.strip)
+end
 if id_of_users.size > 0 
   unique_user = id_of_users
 else
